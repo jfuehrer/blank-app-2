@@ -1,0 +1,79 @@
+import pandas as pandas
+
+def load_data(file_path):
+    return pd.read_csv(file_path)
+def get_foreign_labor_score(percentage):
+    if percentage == 0:
+        return 10
+    elif 1 <= percentage <= 10:
+        return 8
+    elif 11 <+ percentage <+ 20:
+        return 6
+    elif 21 <= percentage <= 50:
+        return 4
+    else:
+        return 2
+    
+
+def get_country_risk_multiplier(country):
+    low_risk_countries = ['Canada', 'Germany', 'France', 'United Kingdom']
+    moderate_risk_countries = ['India', 'Brazil', 'South Korea']
+    high_risk_countries = ['Russia', 'China', 'Iran', 'North Korea']
+
+    if country in low_risk_countries:
+        return 1.0
+    elif country in moderate_risk_countries:
+        return 0.8
+    elif country in high_risk_countries:
+        return 0.6
+    else:
+        return 0.8 #default to moderate risk
+    
+def calculate_job_sensitivity_score(low, moderate, high):
+    total_jobs = low + moderate + high
+    if total_jobs == 0:
+        return 10 # no foreign labor means low risk for jobs
+    
+    weighted_score = ((low * 10) + (moderate * 6) + (high * 2)) / total_jobs
+    return weighted_score
+
+def get_visa_trend_score(trend):
+    if trend == 'downward':
+        return 10
+    elif trend == 'stable':
+        return 6
+    elif trend == 'upward':
+        return 2
+    else:
+        return 6 # default to stable
+    
+def calculate_final_score(row):
+    foreign_labor_score = get_foreign_labor_score(row['foreign_labor_percentage'])
+    country_multiplier = get_country_risk_multiplier(row['country'])
+    adjusted_foreign_labor_score = foreign_labor_score * country_multiplier
+
+    job_sensitivity_score = calculate_job_sensitivity_score(
+        row['job_counts_low'], row['job_counts_moderate'], row['job_counts_high']
+    )
+
+    visa_trend_score = get_visa_trend_score(row['visa_trend'])
+
+    final_score = (
+        (adjusted_foreign_labor_score * 0.4) +
+        (job_sensitivity_score * 0.3) +
+        (visa_trend_score * 0.1)
+    )
+    return final_score
+def main():
+    file_path = input("Enter the CSV file path: ")
+    data = load_data(file_path)
+
+    data['final_score'] = data.apply(calculate_final_score, axis=1)
+
+    output_file = "vendor_risk_score.csv"
+    data.to.csv(output_file, index=False)
+    print(f"Risk scores calculated and saved to {output_file}")
+
+if __name__ == "__main__":
+    main()
+    
