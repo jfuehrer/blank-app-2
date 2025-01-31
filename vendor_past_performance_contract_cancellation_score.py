@@ -33,8 +33,8 @@ def calculate_past_performance_score(non_fulfillment, compliance, adminstrative)
     adminstrative_score = get_cancellation_score("Adminstrative", adminstrative)
 
     # Apply weighted formula for the final risk score
-    risk_score = (non_fulfillment_score * 0.50) + (compliance_score * 0.35) + (adminstrative_score * 0.15)
-    return risk_score
+    cancellation_risk_score = (non_fulfillment_score * 0.50) + (compliance_score * 0.35) + (adminstrative_score * 0.15)
+    return cancellation_risk_score
 
 # This is the function to process data from a CSV file and calculate scores
 def process_vendor_data(input_csv, output_csv):
@@ -66,3 +66,9 @@ output_csv_file = '/mnt/data/vendor_past_performance_results.csv'
 # process_vendor_data(input_csv_file, output_csv_file)
 
 output_csv_file
+
+# figure out the hooks this is api call placeholder
+#def get_cancellation_risk_score():
+        # retrive the score from external API
+        #response = requests.get("https://api.placeholder.com/score?vendor_id=123")
+        #return response.json().get("get_cancellation_risk_score")

@@ -149,5 +149,8 @@ def main():
     results_df.to.csv(output_file, index=False)
     print(f"Risk scores calculated and saved to {output_file}")
 
-if __name__ == "__main__":
-    main()
+# figure out the hooks this is api call placeholder
+#def get_foreign_labor_risk_score():
+        # retrive the score from external API
+        #response = requests.get("https://api.placeholder.com/score?vendor_id=123")
+        #return response.json().get("get_foreign_labor_risk_score")

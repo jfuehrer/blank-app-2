@@ -108,3 +108,9 @@ for vendor in vendor_data:
     results_df.to_csv(output_file, index=False)
 
     output_file
+
+# figure out the hooks this is api call placeholder
+#def get_performance_score():
+        # retrive the score from external API
+        #response = requests.get("https://api.placeholder.com/score?vendor_id=123")
+        #return response.json().get("performance_score")

@@ -42,11 +42,17 @@ def determine_risk_category(score):
         return 'Severe Risk', 'Potential bankruptcy or major financial distress. Avoid vendor'
     
 # Apply the function to each row to calculate the score and risk category
-data['Financial_stability_score'] = data.apply(calculate_financial_score, axis=1)
-data[['Risk_Category', 'Interpretation']] = data['Financial_stability_score'].apply(lambda score: pd.Series(determine_risk_category(score)))
+data['financial_stability_score'] = data.apply(calculate_financial_score, axis=1)
+data[['Risk_Category', 'Interpretation']] = data['financial_stability_score'].apply(lambda score: pd.Series(determine_risk_category(score)))
 
 # Display the results
-print(data[['Vendor', 'Financial_Stability_Score', 'Risk_Category', 'Interpretation']])
+print(data[['Vendor', 'financial_Stability_Score', 'Risk_Category', 'Interpretation']])
 
 # Save the results to a new CSV File
 data.to.csv('financial_stability_scores_with_risk.csv', index=False)
+
+# figure out the hooks this is api call placeholder
+#def get_financial_stability_score():
+        # retrive the score from external API
+        #response = requests.get("https://api.placeholder.com/score?vendor_id=123")
+        #return response.json().get("get_financial_stability_score")
