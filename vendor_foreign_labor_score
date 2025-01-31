@@ -75,6 +75,7 @@ def get_visa_trend_adjustment(trend_data):
         return 6
     else:
         return 6 # default to stable trend if no data
+    
 def calculate_permanent_visa_score(visa_counts, trend_data):
     visa_data_score = calculate_visa_data_score(visa_counts)
     trend_adjustment = get_visa_trend_adjustment(trend_data)
@@ -113,7 +114,24 @@ def main():
     # calculate scores for each row
     data['final_score'] = data.apply(calculate_final_score, axis=1)
 
-    output_file = "vendor_risk_score.csv"
+    # calculate permanent visa score assuming visa data and trend columns are provided
+    data['permanent_visa_score'] = data.apply(
+        lambda row: calculate_permanent_visa_score(
+            {
+                'certified': row['visa_certified_count'],
+                'denied': row['visa_denied_count'],
+                'withdrawn': row['visa_withdrawn_count'],
+                'certified_expired': row['visa_certified_expired_count'],
+                'unspecified': row['visa_unspecified_count']            
+            }
+        ), axis=1  
+    )
+
+    #calculate foreign labor risk score and interpretation
+    data['foreign_labor_risk_score'] = data.apply(lambda row: calculate_foreign_labor_risk_score(row['final_score'], row['permanent_visa_score']), axis=1)
+    data[['risk_category', 'interpretation']] = data['foreign_labor_risk_score'].apply(lambda score: pd.Series(interpret_risk_score(score)))
+
+    output_file = "vendor_risk_scores_with_interpretation.csv"
     data.to.csv(output_file, index=False)
     print(f"Risk scores calculated and saved to {output_file}")
 
