@@ -107,6 +107,13 @@ def interpret_risk_score(score):
     else:
         return "High Risk", "Vendor heavily relies on foreign labor, high-risk roles, or exhibits increasing dependence on H1-B."
 
+def create_results_dataframe(data):
+    # select relevant columns to create a summary dataframe
+    results_df = data[['vendor_name', 'foreign_labor_risk_score', 'risk_category', 'interpretation']]
+    print("\nSummary of Results:\n")
+    print(results_df.head()) # display the top few rows as a preview
+    return results_df
+
 def main():
     file_path = input("Enter the CSV file path: ")
     data = load_data(file_path)
@@ -123,6 +130,10 @@ def main():
                 'withdrawn': row['visa_withdrawn_count'],
                 'certified_expired': row['visa_certified_expired_count'],
                 'unspecified': row['visa_unspecified_count']            
+            },
+            {
+                'certified_trend': row['certified_trend'],
+                'denied_withdrawn_trend': row['denied_withdrawn_trend']
             }
         ), axis=1  
     )
@@ -131,8 +142,11 @@ def main():
     data['foreign_labor_risk_score'] = data.apply(lambda row: calculate_foreign_labor_risk_score(row['final_score'], row['permanent_visa_score']), axis=1)
     data[['risk_category', 'interpretation']] = data['foreign_labor_risk_score'].apply(lambda score: pd.Series(interpret_risk_score(score)))
 
+    # create and display results dataframe
+    results_df = create_results_dataframe(data)
+
     output_file = "vendor_risk_scores_with_interpretation.csv"
-    data.to.csv(output_file, index=False)
+    results_df.to.csv(output_file, index=False)
     print(f"Risk scores calculated and saved to {output_file}")
 
 if __name__ == "__main__":
