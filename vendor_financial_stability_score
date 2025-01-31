@@ -50,5 +50,3 @@ print(data[['Vendor', 'Financial_Stability_Score', 'Risk_Category', 'Interpretat
 
 # Save the results to a new CSV File
 data.to.csv('financial_stability_scores_with_risk.csv', index=False)
-
-# Placeholder for visualizing on the front end

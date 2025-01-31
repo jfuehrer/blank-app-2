@@ -2,6 +2,7 @@ import pandas as pd
 
 def load_data(file_path):
     return pd.read_csv(file_path)
+
 def get_foreign_labor_score(percentage):
     if percentage == 0:
         return 10
@@ -14,7 +15,6 @@ def get_foreign_labor_score(percentage):
     else:
         return 2
     
-
 def get_country_risk_multiplier(country):
     low_risk_countries = ['Canada', 'Germany', 'France', 'United Kingdom']
     moderate_risk_countries = ['India', 'Brazil', 'South Korea']
@@ -37,16 +37,49 @@ def calculate_job_sensitivity_score(low, moderate, high):
     weighted_score = ((low * 10) + (moderate * 6) + (high * 2)) / total_jobs
     return weighted_score
 
-def get_visa_trend_score(trend):
-    if trend == 'downward':
-        return 10
-    elif trend == 'stable':
-        return 6
-    elif trend == 'upward':
-        return 2
+def get_visa_category_score(category, count):
+    if category == 'certified':
+        if count <= 10:
+            return 10
+        elif count <= 20:
+            return 8
+        elif count <= 50:
+            return 6
+        else:
+            return 4
+        
+    elif category in ['denied', 'withdrawn', 'unspecified']:
+        if count <= 10:
+            return 6
+        elif count <= 20:
+            return 2
+        else:
+            return 1
     else:
-        return 6 # default to stable
+        return 6 # default for other categories
     
+def calculate_visa_data_score(visa_counts):
+    total_count=sum(visa_counts.values())
+    if total_count == 0:
+        return 10 # no visa data means minimal risk
+    
+    score_sum = sum(count * get_visa_category_score(category, count) * 0.10 for category, count in visa_counts.items())
+    return score_sum / total_count
+
+def get_visa_trend_adjustment(trend_data):
+    if trend_data['denied_withdrawn_trend'] == 'downward' or trend_data['certified_trend'] == 'upward':
+        return 10
+    elif trend_data['certified_trend'] == 'downward' or trend_data['denied_withdrawn_trend'] == 'upward':
+        return 2
+    elif trend_data['certified_trend'] == 'stable' and trend_data['denied_withdrawn_trend'] == 'stable':
+        return 6
+    else:
+        return 6 # default to stable trend if no data
+def calculate_permanent_visa_score(visa_counts, trend_data):
+    visa_data_score = calculate_visa_data_score(visa_counts)
+    trend_adjustment = get_visa_trend_adjustment(trend_data)
+    return (visa_data_score * 0.10) + (trend_adjustment * 0.10)
+
 def calculate_final_score(row):
     foreign_labor_score = get_foreign_labor_score(row['foreign_labor_percentage'])
     country_multiplier = get_country_risk_multiplier(row['country'])
@@ -56,18 +89,28 @@ def calculate_final_score(row):
         row['job_counts_low'], row['job_counts_moderate'], row['job_counts_high']
     )
 
-    visa_trend_score = get_visa_trend_score(row['visa_trend'])
-
     final_score = (
         (adjusted_foreign_labor_score * 0.4) +
-        (job_sensitivity_score * 0.3) +
-        (visa_trend_score * 0.1)
+        (job_sensitivity_score * 0.3)
     )
     return final_score
+
+def calculate_foreign_labor_risk_score(h1b_score, permanent_visa_score):
+    return h1b_score + permanent_visa_score
+
+def interpret_risk_score(score):
+    if 9.0 <= score <= 10.0:
+        return "Low Risk", "Vendor has minimal reliance on foreign labor, low-risk roles, and favorable historical trend"
+    elif 7.0 <= score < 9.0:
+        return "Moderate Risk", "Vendor uses some foreign labor for low to moderately sensitive roles but demostrates reasonable controls."
+    else:
+        return "High Risk", "Vendor heavily relies on foreign labor, high-risk roles, or exhibits increasing dependence on H1-B."
+
 def main():
     file_path = input("Enter the CSV file path: ")
     data = load_data(file_path)
-
+    
+    # calculate scores for each row
     data['final_score'] = data.apply(calculate_final_score, axis=1)
 
     output_file = "vendor_risk_score.csv"
