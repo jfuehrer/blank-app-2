@@ -1,5 +1,14 @@
 import pandas as pd
 
+# Load CSV file ('replace federal_contract_financial_source_data_csv') with your file name) make sure to confirm name and headers
+data = pd.read_csv('federal_contract_financial_source_data.csv')
+
+# josh ensure the csv contains the required columns
+required_columns = ['amount_vs_year', 'growth_rate', 'amount_vs_agency', 'amount_vs_sub_agency', 'amount_vs_competition']
+for col in required_columns:
+    if col not in data.columns:
+        raise ValueError(f"Missing required column: {col}")
+    
 # defined scoring critiera for each contract category
 def score_amount_vs_year(growth_rate, fluctuation_type, drop_rate):
     if growth_rate > 10:
@@ -68,49 +77,61 @@ def calculate_federal_performance_score(amount_vs_year_score, amount_vs_agency_s
     else:
         return performance_score, "Low Performance", "The company has significant risks due to inconsistent growth, limited agency relationships, or high reliance on non-competitive awards."
 
-# I don't know what the data Michael will provide so here is my current vendor data mockup example with metrics
-vendor_data = [
-    {
-        "Vendor Name": "Vendor A",
-        "Growth Rate": 12,
-        "Fluctuation Type": "minor",
-        "Drop Rate": 0,
-        "Agency Count": 5,
-        "Sub-Agency Count": 6,
-        "No Competition Percentage": 9
-    },
-]
+# the function to valide required columns in CSV file
+def validate_csv_columns(df, required_columns):
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
+    
+# the function to process data from csv file
+def process_csv_file(input_csv):
+    """Load CSV file, validate columns, and calculate scores"""
+    required_columns = [
+        'Vendor Name', 'Growth Rate', 'Fluctuation Type', 'Drop Rate',
+        'Agency Count', 'Sub-Agency Count', 'No Competition Percentage'
+    ]
 
-# initial thoughts on how to process each vendor and calcuate scores
-results = []
-for vendor in vendor_data:
-    amount_vs_year_score = score_amount_vs_year(vendor['Growth Rate'], vendor['Fluctuation Type'], vendor['Drop Rate'])
-    amount_vs_agency_score = score_amount_vs_agency(vendor['Agency Count'])
-    amount_vs_sub_agency_score = score_amount_vs_sub_agency(vendor['Sub-Agency Count'])
-    amount_vs_competition_score = score_amount_vs_competition(vendor['No Competition Percentage'])
+    # Load CSV File
+    df = pd.read.csv(input_csv)
 
-    total_score = calculate_contract_score(amount_vs_year_score, amount_vs_agency_score, amount_vs_sub_agency_score, amount_vs_competition_score)
-    performance_score, performance_category, interpretation = calculate_federal_performance_score(amount_vs_year_score, amount_vs_agency_score, amount_vs_sub_agency_score, amount_vs_competition_score)
+    # Then validate csv file for required columns
+    validate_csv_columns(df, required_columns)
 
-    results.append({
-        "Vendor Name": vendor['Vendor Name'],
-        "Total Score": total_score,
-        "Performance Score": performance_score,
-        "Performance Category": performance_category,
-        "Interpretation": interpretation
-    })
+    # Function to calculate score for each vendor
+    
+    results = []
+    for _, row in df.iterrows():
+        amount_vs_year_score = score_amount_vs_year(row['Growth Rate'], row['Fluctuation Type'], row['Drop Rate'])
+        amount_vs_agency_score = score_amount_vs_agency(row['Agency Count'])
+        amount_vs_sub_agency_score = score_amount_vs_sub_agency(row['Sub-Agency Count'])
+        amount_vs_competition_score = score_amount_vs_competition(row['No Competition Percentage'])
+        
+        total_score = calculate_contract_score(amount_vs_year_score, amount_vs_agency_score, amount_vs_sub_agency_score, amount_vs_competition_score)
+        performance_score, performance_category, interpretation = calculate_federal_performance_score(amount_vs_year_score, amount_vs_agency_score, amount_vs_sub_agency_score, amount_vs_competition_score)
+        
+        results.append({
+            "Vendor Name": row['Vendor Name'],
+            "Total Score": total_score,
+            "Performance Score": performance_score,
+            "Performance Category": performance_category,
+            "Interpretation": interpretation
+        })
 
     # create a dataframe for results
     results_df = pd.DataFrame(results)
+    return results_df
 
-    #output results to csv
-    output_file = '/mnt/data/vendor_contract_scores_with_performance.csv'
-    results_df.to_csv(output_file, index=False)
+# example usage
+input_csv_file = '/mnt/data/vendor_contract_financial_source_input.csv'
+output_csv_file = '/mnt/data/vendor_contract_financial_source_scores.csv'
 
-    output_file
+# process csv and export results
 
-# figure out the hooks this is api call placeholder
-#def get_performance_score():
-        # retrive the score from external API
-        #response = requests.get("https://api.placeholder.com/score?vendor_id=123")
-        #return response.json().get("performance_score")
+try:
+    results_df = process_csv_file(input_csv_file)
+    results_df.to_csv(output_csv_file, index=False)
+    print(f"Results saved {output_csv_file}")
+except Exception as e:
+    print(f"Error process CSV file: {e}")
+
+output_csv_file

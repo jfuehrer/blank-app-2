@@ -29,7 +29,7 @@ def calculate_vendor_risk_reliability_score(financial_stability_score, past_canc
     )
 
     return vrrs_score
-
+    
 def interpret_vendor_risk_reliability_score(vrrs_score):
     """
     Interpret the VRRS.
