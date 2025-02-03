@@ -1,14 +1,11 @@
 import pandas as pd
 
-# Load CSV file ('replace federal_contract_financial_source_data_csv') with your file name) make sure to confirm name and headers
-data = pd.read_csv('federal_contract_financial_source_data.csv')
+# call to utils function to load and validate csv
+from utils import load_and_validate_csv
 
-# josh ensure the csv contains the required columns
-required_columns = ['amount_vs_year', 'growth_rate', 'amount_vs_agency', 'amount_vs_sub_agency', 'amount_vs_competition']
-for col in required_columns:
-    if col not in data.columns:
-        raise ValueError(f"Missing required column: {col}")
-    
+data = load_and_validate_csv('federal_contract_financial_source_data.csv', ['amount_vs_year', 'growth_rate', 'amount_vs_agency', 'amount_vs_sub_agency', 'amount_vs_competition'])
+
+
 # defined scoring critiera for each contract category
 def score_amount_vs_year(growth_rate, fluctuation_type, drop_rate):
     if growth_rate > 10:

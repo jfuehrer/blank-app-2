@@ -1,14 +1,10 @@
 import pandas as pd
 
-# Load CSV file ('replace financial_data_csv') with your file name) make sure to confirm name and headers
-data = pd.read_csv('financial_data.csv')
+# call to utils function to load and validate csv
+from utils import load_and_validate_csv
 
-# josh ensure the csv contains the required columns
-required_columns = ['Vendor', 'Altman_Z', 'DTE', 'ROA', 'ROE']
-for col in required_columns:
-    if col not in data.columns:
-        raise ValueError(f"Missing required column: {col}")
-    
+data = load_and_validate_csv('financial_data_csv', ['Vendor', 'Altman_Z', 'DTE', 'ROA', 'ROE'])
+
 # define weightings for each FM
 weights = {
     'Altman_Z': 0.30,

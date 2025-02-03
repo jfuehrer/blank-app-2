@@ -1,7 +1,10 @@
 import pandas as pd
 
-def load_data(file_path):
-    return pd.read_csv(file_path)
+# call to utils function to load and validate csv
+from utils import load_and_validate_csv
+
+# Josh confirm foreign labor data csv
+data = load_and_validate_csv('foreign_labor_data.csv', ['country', 'certified', 'denied', 'withdrawn', 'unspecified', 'trend_data'])
 
 def get_foreign_labor_score(percentage):
     if percentage == 0:

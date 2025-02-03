@@ -1,0 +1,7 @@
+# this handles orchestration by invoking each scoring function and combing their results
+
+# import functions from other modules
+from vendor_risk_scoring.financial_stability_score import get_financial_stability_score
+from vendor_past_performance_contract_cancellation_score import get_cancellation_risk_score
+from vendor_federal_contract_financial_source_score import get_performance_score
+from vendor_foreign_labor_score import get_foreign_labor_risk_score

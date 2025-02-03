@@ -1,5 +1,11 @@
 import pandas as pd
 
+# call to utils function to load and validate csv
+from utils import load_and_validate_csv
+
+# Josh confirm past performance contract cancellation csv
+data = load_and_validate_csv('past_performance_contract_cancellation.csv', ['vendor name', 'cancellation type'])
+
 # define scoring critera
 def get_cancellation_score(cancellation_type, count):
     """Determine score based on te number of cancellations for a given type."""
