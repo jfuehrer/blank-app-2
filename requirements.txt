@@ -1,1 +1,16 @@
 streamlit
+pandas==1.5.3 # for data manipulation and csv handling
+
+Required for reading and writing csv files and data manipulation
+import pandas as pd 
+data = pd.read_csv('vendor_data.csv')
+
+optional additions for development for consideration
+pytest==7.2.2 # for writing and running unit tests
+black==23.3.0 # for coding formatting
+flake8==6.0.0 # for linting and static code analysis
+mypy==1.0.0 # for static type checking
+
+Install dependencies in github codespaces
+run the following command to install dependencies:
+pip install -r requirements.txt

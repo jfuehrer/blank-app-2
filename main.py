@@ -41,7 +41,6 @@ def main():
 # Ben: You would write your visualization here OR branch it out from the main file.
 # Ben: best way to do it, calculations first, then visualization
 
-
 def save_results_to_csv(results, output_file):
     """Save results to csv file"""
     import pandas as pd
