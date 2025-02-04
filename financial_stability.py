@@ -12,4 +12,4 @@ def get_financial_stability_score(vendor_data):
     Calculate financial stability scoring using weighted financial metrics
     """
     weighted_score = sum(vendor_data[metric] * weight for metric, weight in FINANCIAL_METRIC_WEIGHTS.items())
-    return weighted_score / sum(FINANCIAL_METRIC_WEIGHTS.values())
+    return round(weighted_score / sum(FINANCIAL_METRIC_WEIGHTS.values()), 2)
