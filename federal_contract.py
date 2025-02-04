@@ -17,7 +17,7 @@ GROWTH_RATE_THRESHOLDS = [
     (10, float('inf'), 10),
     (6, 9, 8),
     (1, 5, 6),
-    (-float('int'), 0, 3) # negative growth scores lower
+    (-float('inf'), 0, 3) # negative growth scores lower
 ]
 
 NO_COMPETITION_THRESHOLDS = [

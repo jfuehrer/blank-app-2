@@ -6,6 +6,7 @@ vendor_data_example = {
     'DTE': 1.2,
     'DTI': 0.8,
     'ROA': 0.15,
+    'ROE': 0.25,
     'Non-Fulfillment': 1,
     'Compliance': 0,
     'Adminstrative': 2,
