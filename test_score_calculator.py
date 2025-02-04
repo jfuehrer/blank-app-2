@@ -11,7 +11,7 @@ vendor_data_example = {
     'Compliance': 0,
     'Adminstrative': 2,
     'Agency Count': 4,
-    'Sub-Agency Count': 3,
+    'Sub Agency Count': 3,
     'Growth Rate': 7,
     'No Competition Percentage': 20,
     'foreign_labor_percentage': 15,

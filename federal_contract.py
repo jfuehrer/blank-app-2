@@ -51,7 +51,7 @@ def score_amount_vs_competition(no_competition_percentage):
 def get_federal_contract_score(vendor_data):
     """calculate federal financial contract score based on multiple critiera"""
     agency_score = score_amount_vs_agency(vendor_data['Agency Count'])
-    sub_agency_score = score_amount_vs_sub_agency(vendor_data['Sub_Agency Count'])
+    sub_agency_score = score_amount_vs_sub_agency(vendor_data['Sub Agency Count'])
     growth_rate_score = score_amount_vs_growth_rate(vendor_data['Growth Rate'])
     competition_score = score_amount_vs_competition(vendor_data['No Competition Percentage'])
 
