@@ -7,7 +7,7 @@ def main():
     # define input csv path and required columns
     input_csv = "vendor_data.csv"
     required_columns = [
-        'Vendor', 'Altman_Z', 'DTE', 'DTI', 'ROA',
+        'Vendor', 'Altman_Z', 'DTE', 'DTI', 'ROA', 'ROE',
         'Non-Fulfillment', 'Compliance', ' Adminstrative',
         'Agency Count', 'Sub-Agency Count', 'Growth Rate',
         'No Competition Percentage', 'foreign_labor_percentage',
