@@ -22,10 +22,36 @@ RISK_CATEGORIZATION = {
 }
 
 VISA_CATEGORY_THRESHOLDS = {
-    'certified': [(0, 10, 10), (11, 20, 8), (21, 50, 6), (51, float('inf'), 4)],
-    'denied': [(0, 10, 6), (11, 20, 4), (21, 50, 2), (51, float('inf'), 1)],
-    'withdrawn': [(0, 10, 6), (11, 20, 4), (21, 50, 2), (51, float('inf'), 1)],
-    'unspecified': [(0, 10, 6), (11, 20, 4), (21, 50, 2), (51, float('inf'), 1)]
+    'certified': [
+        (0, 10, 10), 
+        (11, 20, 8), 
+        (21, 50, 6), 
+        (51, float('inf'), 4)
+    ],
+    'denied': [
+        (0, 10, 6), 
+        (11, 20, 4), 
+        (21, 50, 2), 
+        (51, float('inf'), 1)
+    ],
+    'withdrawn': [
+        (0, 10, 6), 
+        (11, 20, 4), 
+        (21, 50, 2), 
+        (51, float('inf'), 1)
+    ],
+    'certified_expired': [
+        (0, 10, 6), 
+        (11, 20, 4), 
+        (21, 50, 2), 
+        (51, float('inf'), 1)
+    ],
+    'unspecified': [
+        (0, 10, 6), 
+        (11, 20, 4), 
+        (21, 50, 2), 
+        (51, float('inf'), 1)
+    ]
 }
 
 TREND_ADJUSTMENT = {
@@ -36,7 +62,7 @@ TREND_ADJUSTMENT = {
 
 # generic scoring function based on thresholds
 def score_with_thresholds(value, thresholds):
-    """Score a value based on predefined thresholds"""
+    """Score a values based on predefined thresholds"""
     for lower, upper, score in thresholds:
         if lower <= value <= upper:
             return score
@@ -67,11 +93,11 @@ def calculate_job_sensitivity_score(low, moderate, high):
 # 4. Visa Category Score
 def get_visa_category_score(category, count):
     """Calculate the score for a specific visa category based on counts"""
-    return score_with_thresholds(count, VISA_CATEGORY_THRESHOLDS(category, []))
+    return score_with_thresholds(count, VISA_CATEGORY_THRESHOLDS.get(category, []))
 
 def calculate_visa_data_score(visa_counts):
     """Calculate the overall score based on multiple visa categories"""
-    total_count = sum(visa_counts.value())
+    total_count = sum(visa_counts.values())
     if total_count == 0:
         return 10 # no visa data implies min risk
     score_sum = sum(get_visa_category_score(category, count) for category, count in visa_counts.items())
@@ -80,9 +106,9 @@ def calculate_visa_data_score(visa_counts):
 # 5. Visa Trend Adjustment Score
 def get_visa_trend_adjustment(trend_data):
     """Adjust the visa score based on recent trends"""
-    if trend_data['denied_withdrawn_trend'] == 'downward' or trend_data['ceritifed_trend'] == 'upward':
+    if trend_data['denied_withdrawn_trend'] == 10 or trend_data['ceritifed_trend'] == 10:
         return TREND_ADJUSTMENT['favorable']
-    elif trend_data['certified_trend'] == 'stable' and trend_data['denied_withdrawn_trend'] == 'stable':
+    elif trend_data['certified_trend'] == 6 and trend_data['denied_withdrawn_trend'] == 6:
         return TREND_ADJUSTMENT['neutral']
     else:
         return TREND_ADJUSTMENT['unfavorable']
@@ -110,7 +136,8 @@ def calculate_final_foreign_labor_score(vendor_data):
             'certified': vendor_data['visa_certified_count'],
             'denied': vendor_data['visa_denied_count'],
             'withdrawn': vendor_data['visa_withdrawn_count'],
-            'unspecified': vendor_data['visa_unspecified_count']
+            'certified_expired': vendor_data['visa_certified_expired_count'],
+            'unspecified': vendor_data['visa_unspecified_count'],
         },
         {
             'certified_trend': vendor_data['certified_trend'],

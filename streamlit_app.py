@@ -24,9 +24,10 @@ vendor_data_example = {
     'visa_certified_count': 25,
     'visa_denied_count': 5,
     'visa_withdrawn_count': 2,
+    'visa_certified_expired_count': 2,
     'visa_unspecified_count': 0,
-    'certified_trend': 'stable',
-    'denied_withdrawn_trend': 'upward'
+    'certified_trend': 6,
+    'denied_withdrawn_trend': 10
 }
 
 # title for streamlit app

@@ -9,11 +9,11 @@ def main():
     required_columns = [
         'Vendor', 'Altman_Z', 'DTE', 'DTI', 'ROA', 'ROE',
         'Non-Fulfillment', 'Compliance', ' Adminstrative',
-        'Agency Count', 'Sub-Agency Count', 'Growth Rate',
+        'Agency Count', 'Sub Agency Count', 'Growth Rate',
         'No Competition Percentage', 'foreign_labor_percentage',
         'country', 'job_counts_low', 'job_counts_moderate',
         'job_counts_high', 'visa_certified_count',
-        'visa_denied_count', 'visa_withdrawn_count',
+        'visa_denied_count', 'visa_withdrawn_count', 'visa_certified_expired_count',
         'visa_unspecified_count', 'certified_trend', 'denied_withdrawn_trend'
     ]
 
