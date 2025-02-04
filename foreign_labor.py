@@ -159,3 +159,6 @@ def interpret_foreign_labor_risk_score(score):
         return "Moderate Risk", "Vendor uses some foreign labor for low to moderately sensitive roles but demostrates reasonable controls."
     else:
         return "High Risk", "Vendor heavily relies on foreign labor, high-risk roles, or exhibits increasing dependence on H1-B."
+
+
+# need pull interpretation of results by pulling each score interpretation into this function above
