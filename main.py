@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from score_calculator import calculate_scores
 from utils import load_and_validate_csv
 
@@ -11,8 +12,7 @@ def main():
         'Non-Fulfillment', 'Compliance', ' Adminstrative',
         'Agency Count', 'Sub Agency Count', 'Growth Rate',
         'No Competition Percentage', 'foreign_labor_percentage',
-        'country', 'job_counts_low', 'job_counts_moderate',
-        'job_counts_high', 'visa_certified_count',
+        'countries_data', 'visa_certified_count',
         'visa_denied_count', 'visa_withdrawn_count', 'visa_certified_expired_count',
         'visa_unspecified_count', 'certified_trend', 'denied_withdrawn_trend'
     ]
