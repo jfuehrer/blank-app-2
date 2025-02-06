@@ -12,10 +12,14 @@ vendor_data_example = {
     'Non-Fulfillment': 1,
     'Compliance': 0,
     'Adminstrative': 2,
-    'Agency Count': 4,
-    'Sub Agency Count': 3,
-    'Growth Rate': 7,
-    'No Competition Percentage': 20,
+    'awards': [
+        {'type': 'prime_contract', 'amount': 60_000_000},
+        {'type': 'prime_assistance', 'amount': 25_000_000},
+        {'type': 'sub_contract', 'amount': 15_000_000}
+        ],
+    'competition_percentage': 10,
+    'agency_count': 5,
+    'sub_agency_count': 4,
     'foreign_labor_percentage': 15,
     'countries_data': [
         {
