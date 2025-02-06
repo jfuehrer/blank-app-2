@@ -1,3 +1,5 @@
+# # Josh note: foreign labor score is working and has been tested.
+
 # foreign labor scoring
 COUNTRY_RISK_MULTIPLIER = {
     'low_risk': 1.0,

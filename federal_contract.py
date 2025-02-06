@@ -1,3 +1,5 @@
+# Josh note: federal contract score is working and has been tested.
+
 # federal contract financial scoring
 AGENCY_THRESHOLDS = [
     (5, float('inf'), 10),

@@ -1,3 +1,5 @@
+# Josh note: financial stability score is working and has been tested. Need to add interpretation results
+
 # financial stability scoring
 FINANCIAL_METRIC_WEIGHTS = {
     'Altman_Z': 0.30,
