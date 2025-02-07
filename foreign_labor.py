@@ -1,4 +1,6 @@
 # # Josh note: foreign labor score is working and has been tested.
+# josh additional note: need to relook at foreign percentage and possibly remove and focus on counts. Palo alto run looked funny.
+# josh additional additional note: need to look at trend scoring and remove just focus on current year
 
 # foreign labor scoring
 COUNTRY_RISK_MULTIPLIER = {
