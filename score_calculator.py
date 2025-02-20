@@ -1,4 +1,5 @@
 # this handles orchestration by invoking each scoring function and combing their results
+# cabby/blue: can we flip the scoring so it is a higher score (high score = high risk)
 
 # import functions from other modules
 from financial_stability import get_financial_stability_score
