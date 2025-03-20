@@ -4,9 +4,9 @@ from score_calculator import calculate_scores
 # sample vendor data
 vendor_data_example = {
     'Vendor': 'Palo Alto',
-    'Altman_Z': 5.65,
-    'DTE': 0.1,
-    'DTI': 0.9,
+    'Altman_Z': 1.65,
+    'DTE': 1.1,
+    'DTI': 1.9,
     'ROA': -0.34,
     'ROE': -0.81,
     'Non-Fulfillment': 0,
