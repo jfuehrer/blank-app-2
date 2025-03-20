@@ -1,32 +1,33 @@
 # Josh note: federal contract score is working and has been tested.
+# scoring reversed to meet cabby/blue ask
 
 # federal contract financial scoring
 AGENCY_THRESHOLDS = [
-    (5, float('inf'), 10),
-    (3, 4, 7),
-    (1, 2, 4),
-    (0, 0, 1)
+    (5, float('inf'), 1),
+    (3, 4, 4),
+    (1, 2, 7),
+    (0, 0, 10)
 ]
 
 SUB_AGENCY_THRESHOLDS = [
-    (5, float('inf'), 10),
-    (3, 4, 7),
-    (1, 2, 4),
-    (0, 0, 1)
+    (5, float('inf'), 1),
+    (3, 4, 4),
+    (1, 2, 7),
+    (0, 0, 10)
 ]
 
 AWARD_TYPE_THRESHOLDS = {
-    'prime_contract': [(50_000_000, float('inf'), 10), (20_000_000, 50_000_000, 9), (10_000_000, 20_000_000, 8), (0, 10_000_000, 6)],
-    'prime_assistance': [(50_000_000, float('inf'), 9), (20_000_000, 50_000_000, 8), (10_000_000, 20_000_000, 6), (0, 10_000_000, 5)],
-    'sub_contract': [(50_000_000, float('inf'), 8), (20_000_000, 50_000_000, 7), (10_000_000, 20_000_000, 5), (0, 10_000_000, 4)],
-    'sub_assistance': [(50_000_000, float('inf'), 7), (20_000_000, 50_000_000, 6), (10_000_000, 20_000_000, 4), (0, 10_000_000, 3)],
+    'prime_contract': [(50_000_000, float('inf'), 1), (20_000_000, 50_000_000, 2), (10_000_000, 20_000_000, 3), (0, 10_000_000, 5)],
+    'prime_assistance': [(50_000_000, float('inf'), 2), (20_000_000, 50_000_000, 3), (10_000_000, 20_000_000, 4), (0, 10_000_000, 5)],
+    'sub_contract': [(50_000_000, float('inf'), 3), (20_000_000, 50_000_000, 4), (10_000_000, 20_000_000, 5), (0, 10_000_000, 6)],
+    'sub_assistance': [(50_000_000, float('inf'), 3), (20_000_000, 50_000_000, 4), (10_000_000, 20_000_000, 6), (0, 10_000_000, 7)],
 }
 
 COMPETITION_THRESHOLDS = [
-    (0, 10, 10),
-    (11, 25, 7),
-    (26, 50, 4),
-    (51, float('inf'), 1)
+    (0, 10, 1),
+    (11, 25, 4),
+    (26, 50, 7),
+    (51, float('inf'), 10)
 ]
 
 def score_with_thresholds(value, thresholds):
@@ -84,9 +85,9 @@ def calculate_final_contract_score(vendor_data):
 # interpretation function
 def interpret_federal_contract_score(score):
     """Interpret the final federal contract performance score"""
-    if score >= 8.0:
-        return "High Performance", "The company shows strong contractual growth, broad agency relationships, diverse sub-agency awards, and limited reliance on non-competitive contracts."
-    elif 5.0 <= score < 8.0:
+    if score >= 5.0:
+        return "Low Performance", "The company has significant risks due to inconsistent growth, limited agency relationships, or high reliance on non-competitive awards."
+    elif 2.0 <= score < 4.9:
         return "Moderate Performance", "The company demonstrates solid performance but may need to improve diversification or reduce dependency on non-competitive contracts."
     else:
-        return "Low Performance", "The company has significant risks due to inconsistent growth, limited agency relationships, or high reliance on non-competitive awards."
+        return "High Performance", "The company shows strong contractual growth, broad agency relationships, diverse sub-agency awards, and limited reliance on non-competitive contracts."

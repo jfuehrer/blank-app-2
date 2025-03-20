@@ -1,12 +1,13 @@
 # # Josh note: foreign labor score is working and has been tested.
 # josh additional note: need to relook at foreign percentage and possibly remove and focus on counts. Palo alto run looked funny.
-# josh additional additional note: need to look at trend scoring and remove just focus on current year
+# josh additional additional note: need to look at trend scoring and remove just focus on current year--removed trend
+# updated reversal based on blue/cabby comments
 
 # foreign labor scoring
 COUNTRY_RISK_MULTIPLIER = {
-    'low_risk': 1.0,
+    'low_risk': 0.6,
     'moderate_risk': 0.8,
-    'high_risk': 0.6
+    'high_risk': 1.0
 }
 
 RISK_CATEGORIZATION = {
@@ -17,37 +18,38 @@ RISK_CATEGORIZATION = {
 
 VISA_CATEGORY_THRESHOLDS = {
     'certified': [
-        (0, 10, 10), 
-        (11, 20, 8), 
-        (21, 50, 6), 
-        (51, float('inf'), 4)
+        (0, 10, 1), 
+        (11, 20, 6), 
+        (21, 50, 8), 
+        (51, float('inf'), 10)
     ],
     'denied': [
-        (0, 10, 6), 
-        (11, 20, 4), 
-        (21, 50, 2), 
-        (51, float('inf'), 1)
+        (0, 10, 1), 
+        (11, 20, 2), 
+        (21, 50, 4), 
+        (51, float('inf'), 6)
     ],
     'withdrawn': [
-        (0, 10, 6), 
-        (11, 20, 4), 
-        (21, 50, 2), 
-        (51, float('inf'), 1)
+        (0, 10, 1), 
+        (11, 20, 2), 
+        (21, 50, 4), 
+        (51, float('inf'), 6)
     ],
     'certified_expired': [
-        (0, 10, 6), 
-        (11, 20, 4), 
-        (21, 50, 2), 
-        (51, float('inf'), 1)
+        (0, 10, 1), 
+        (11, 20, 2), 
+        (21, 50, 4), 
+        (51, float('inf'), 6)
     ],
     'unspecified': [
-        (0, 10, 6), 
-        (11, 20, 4), 
-        (21, 50, 2), 
-        (51, float('inf'), 1)
+        (0, 10, 1), 
+        (11, 20, 2), 
+        (21, 50, 4), 
+        (51, float('inf'), 6)
     ]
 }
 
+# removed 
 #FOREIGN_LABOR_PERCENTAGE_THRESHOLDS = [
 #    (0, 0, 10), #0% foreign labor receives a perfect score
 #    (1, 10, 8), #1% to 10% foreign labor gets a score of 8
@@ -57,11 +59,13 @@ VISA_CATEGORY_THRESHOLDS = {
 #]
 
 
-TREND_ADJUSTMENT = {
-    'favorable': 10,
-    'neutral': 6,
-    'unfavorable': 2
-}
+#removed
+#TREND_ADJUSTMENT = {
+#    'favorable': 2,
+#    'neutral': 6,
+#    'unfavorable': 10
+#}
+
 
 # 0. generic scoring function based on thresholds
 def score_with_thresholds(value, thresholds):
@@ -89,14 +93,14 @@ def calculate_job_sensitivity_score(low, moderate, high):
     """Calculate the job sensitivity score based on the number of job types"""
     total_jobs = low + moderate + high
     if total_jobs == 0:
-        return 10 # no freign labor means minimal job risk
+        return 1 # no freign labor means minimal job risk
     
-    weighted_score = ((low * 10) + (moderate * 6) + (high * 2)) / total_jobs
+    weighted_score = ((low * 1) + (moderate * 6) + (high * 10)) / total_jobs
     return weighted_score
 
 # 4 calculate country score
 def calculate_country_score_with_visa(country_data, visa_counts):
-    """Calculate the forieng lobr score for a specific country
+    """Calculate the foreign labor score for a specific country
     :param country_data: dictionary with country and job sensitivity counts 
     :param visa_counts: dictionary with visa category counts.
     """
@@ -121,7 +125,7 @@ def calculate_country_score_with_visa(country_data, visa_counts):
     adjusted_visa_score = normalized_visa_score * risk_multiplier
 
     # combine job sensitivity score and adjust visa score
-    final_country_score = (job_sensitivity_score * 0.50) + (adjusted_visa_score * 0.50)
+    final_country_score = (job_sensitivity_score * 0.40) + (adjusted_visa_score * 0.60)
     final_country_score = min(max(final_country_score, 0), 10)
     return final_country_score
 
@@ -134,7 +138,7 @@ def calculate_final_adjusted_foreign_labor_score(countries_data, visa_counts):
     :param visa_counts: Dictionary with visa counts
     """
     if not countries_data:
-        return 10 # no foreign labor data
+        return 0 # no foreign labor data
     
     # calculate scores for each country and average them
     country_scores = [
@@ -146,16 +150,17 @@ def calculate_final_adjusted_foreign_labor_score(countries_data, visa_counts):
 
     return round(normalized_score, 2)
 
-# 6 calcluate visa trend score
-
+'''
+# 6 calcluate visa trend score - removed
 def calculate_visa_trend_score(trend_data):
     """calculate a score based on recent trends"""
-    if trend_data['denied_withdrawn_trend'] == 10 or trend_data['ceritifed_trend'] == 10:
+    if trend_data['denied_withdrawn_trend'] == 10 or trend_data['certified_trend'] == 10:
         return TREND_ADJUSTMENT['favorable']
     elif trend_data['certified_trend'] == 6 and trend_data['denied_withdrawn_trend'] == 6:
         return TREND_ADJUSTMENT['neutral']
     else:
         return TREND_ADJUSTMENT['unfavorable']
+'''
 
 # Josh: Need to confirm weighting is applied correctly
 
@@ -176,27 +181,25 @@ def calculate_final_foreign_labor_score(vendor_data):
     adjusted_foreign_labor_score = calculate_final_adjusted_foreign_labor_score(countries_data, visa_counts)
 
     # visa trend score
-    trend_data = {
-        'certified_trend': vendor_data['certified_trend'],
-        'denied_withdrawn_trend': vendor_data['denied_withdrawn_trend']  
-    }
-    visa_trend_score = calculate_visa_trend_score(trend_data)
+    #trend_data = {
+    #    'certified_trend': vendor_data['certified_trend'],
+    #    'denied_withdrawn_trend': vendor_data['denied_withdrawn_trend']  
+    #}
+    #visa_trend_score = calculate_visa_trend_score(trend_data)
  
     # final risk score calculation using a weighted formula
-    final_score = (
-        (adjusted_foreign_labor_score) +
-        (visa_trend_score * 0.20)        
-    )
+    final_score = adjusted_foreign_labor_score 
     return round(final_score, 2)
 
 # 8. interpretation of foreign labor risk
 def interpret_foreign_labor_risk_score(score):
-    if score >= 9.0:
-        return "Low Risk", "Vendor has minimal reliance on foreign labor, low-risk roles, and favorable historical trend"
-    elif 7.0 <= score < 9.0:
+    if score >= 4.0:
+        return "High Risk", "Vendor heavily relies on foreign labor, high-risk roles, or exhibits increasing dependence on H1-B."
+    elif 2.0 <= score < 3.9:
         return "Moderate Risk", "Vendor uses some foreign labor for low to moderately sensitive roles but demostrates reasonable controls."
     else:
-        return "High Risk", "Vendor heavily relies on foreign labor, high-risk roles, or exhibits increasing dependence on H1-B."
+        return "Low Risk", "Vendor has minimal reliance on foreign labor, low-risk roles, and favorable historical trend."
+
 
 
 # need pull interpretation of results by pulling each score interpretation into this function above

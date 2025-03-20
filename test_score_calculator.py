@@ -19,12 +19,11 @@ vendor_data_example = {
     'competition_percentage': 3,
     'agency_count': 2,
     'sub_agency_count': 3,
-    'foreign_labor_percentage': 1,
     'countries_data': [
         {
              'country': 'Canada',
-             'job_counts_low': 0,
-             'job_counts_moderate': 1,
+             'job_counts_low': 100,
+             'job_counts_moderate': 0,
              'job_counts_high': 0,   
         },
         #{
@@ -39,8 +38,6 @@ vendor_data_example = {
     'visa_withdrawn_count': 0,
     'visa_certified_expired_count': 0,
     'visa_unspecified_count': 0,
-    'certified_trend': 10,
-    'denied_withdrawn_trend': 10
 }
 
 #calculate and display scores
