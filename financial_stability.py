@@ -16,68 +16,70 @@ METRIC_RANGES = {
         (2.99, float('inf'), 1)
     ],
     'DTE': [
-         (0.0, 0.5, 1), 
-         (0.51, 1.0, 3), 
-         (1.01, 2.00, 5), 
-         (2.01, 3.0, 7), 
-         (3, float('inf'), 10)
+        (0.0, 0.5, 1), 
+        (0.51, 1.0, 3), 
+        (1.01, 2.00, 5), 
+        (2.01, 3.0, 7), 
+        (3, float('inf'), 10)
     ],
     'DTI': [
-         (0.0, 0.5, 1), 
-         (0.51, 1.0, 3), 
-         (1.01, 2.00, 5), 
-         (2.01, 3.0, 7), 
-         (3, float('inf'), 10)
+        (0.0, 0.5, 1), 
+        (0.51, 1.0, 3), 
+        (1.01, 2.00, 5), 
+        (2.01, 3.0, 7), 
+        (3, float('inf'), 10)
     ],
     'ROA': [
-        (-0.50, -1.0, 10), 
-        (-0.01, -0.49, 8),
-        (0.50, 0.0, 5),
-        (0.2, 0.49, 3),
-        (0.5, float('inf'), 1)
+        (-1.0, -0.50, 10), 
+        (-0.49, -0.01, 8),
+        (0.0, 0.50, 5),
+        (0.51, 0.99, 3),
+        (1.0, float('inf'), 1)
     ],
     'ROE': [
-        (-0.50, -1.0, 10), 
-        (-0.01, -0.49, 8),
-        (0.50, 0.0, 5),
-        (0.2, 0.49, 3),
-        (0.5, float('inf'), 1)
+        (-1.0, -0.50, 10), 
+        (-0.49, -0.01, 8),
+        (0.0, 0.50, 5),
+        (0.51, 0.99, 3),
+        (1.0, float('inf'), 1)
     ]
 }
 
 
-# 01. generic scoring function based on thresholds
+# 1. Generic scoring function based on predefined thresholds
 def score_with_thresholds(value, thresholds):
-    """Score a values based on predefined thresholds"""
+    """Assigns a score based on predefined thresholds."""
     for lower, upper, score in thresholds:
         if lower <= value <= upper:
             return score
-    return 0
-
-# 2. Get Fin Score
-def get_vendor_data(METRIC_RANGES, count):
-   """Calculate the score for a specific visa category based on counts"""
-   return score_with_thresholds(count, METRIC_RANGES.get(count, []))
+    return 0  # Default score if no match is found
 
 
+# 2. Function to calculate score for each financial metric
+def calculate_financial_metric_score(metric, value):
+    """Calculate the financial metric score based on predefined thresholds."""
+    return score_with_thresholds(value, METRIC_RANGES.get(metric, []))
 
+
+# 3. Function to calculate financial stability score
 def get_financial_stability_score(vendor_data):
-    """Calculate financial score.
-    """
-    financial_score = {
-        'Altman_Z': vendor_data.get('Altman_Z', 0),
-        'DTE': vendor_data.get('DTE', 0),
-        'DTI': vendor_data.get('DTI', 0),
-        'ROA': vendor_data.get('ROA', 0),
-        'ROE': vendor_data.get('ROE', 0)
+    """Calculate and return the final financial stability score."""
+    
+    # Ensure vendor_data contains valid numerical values
+    financial_metrics = {metric: float(vendor_data.get(metric, 0)) for metric in FINANCIAL_METRIC_WEIGHTS}
+
+    # Calculate scores for each metric
+    metric_scores = {
+        metric: calculate_financial_metric_score(metric, value) for metric, value in financial_metrics.items()
     }
 
-    final_score = get_financial_stability_score(financial_score)
-    return round (financial_score, 2)
-    #return ('Altman_Z' * 0.30) + ('DTE' * 0.20) + ('DTI' * 0.20) + ('ROA' * .15) + ('ROE' * .15)
-    
+    # Apply weightings and compute the final score
+    weighted_score = sum(metric_scores[metric] * FINANCIAL_METRIC_WEIGHTS[metric] for metric in metric_scores)
 
+    # Normalize by sum of weights (ensuring the score is within the correct range)
+    final_score = weighted_score / sum(FINANCIAL_METRIC_WEIGHTS.values())
 
+    return round(final_score, 2)
 
 
 '''
