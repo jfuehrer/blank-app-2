@@ -81,6 +81,19 @@ def get_financial_stability_score(vendor_data):
 
     return round(final_score, 2)
 
+# need to define interpretation function
+
+def interpret_financial_stability_risk_score(score):
+    if score >= 6.1:
+        return "Severe Risk", "Potential bankruptcy or major financial distress. Avoid vendor."
+    elif 4.0 <= score < 6.0:
+        return "High Risk", "Poor financial health; high risk vendor. Consider alternative vendors. If selected, it will require closer monitoring."
+    elif 2.0 <= score < 5.9:
+        return "Moderate Risk", "Stable financial health."
+    else:
+        return "Low Risk", "Strong financial health, reliable vendor. Proceed with confidence."
+
+
 
 '''
 def normalize_metric(value, min_val, max_val, reverse=False):
@@ -118,4 +131,3 @@ def get_financial_stability_score(row, weights=FINANCIAL_METRIC_WEIGHTS):
 #    'ROE': {'min': -1.0, 'max': 0.30, 'reverse': False}, # high is good
 #}
 '''
-# need to define interpretation function
