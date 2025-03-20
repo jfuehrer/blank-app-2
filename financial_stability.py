@@ -45,7 +45,6 @@ METRIC_RANGES = {
     ]
 }
 
-
 # 1. Generic scoring function based on predefined thresholds
 def score_with_thresholds(value, thresholds):
     """Assigns a score based on predefined thresholds."""

@@ -1,5 +1,5 @@
 # this handles orchestration by invoking each scoring function and combing their results
-# cabby/blue: can we flip the scoring so it is a higher score (high score = high risk)
+# cabby/blue: can we flip the scoring so it is a higher score (high score = high risk) - it has been flipped
 # update 1.1
 
 from financial_stability import get_financial_stability_score, interpret_financial_stability_risk_score

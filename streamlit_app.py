@@ -4,14 +4,14 @@ from score_calculator import calculate_scores
 # sample vendor data
 vendor_data_example = {
     'Vendor': 'Palo Alto',
-    'Altman_Z': 10,
-    'DTE': 0.1,
-    'DTI': 0.1,
+    'Altman_Z': 3,
+    'DTE': 2.1,
+    'DTI': 3.1,
     'ROA': .2,
     'ROE': .2,
-    'Non-Fulfillment': 0,
-    'Compliance': 0,
-    'Adminstrative': 0,
+    'Non-Fulfillment': 5,
+    'Compliance': 2,
+    'Adminstrative': 3,
     'awards': [
         {'type': 'prime_contract', 'amount': 6_278_000},
         {'type': 'prime_assistance', 'amount': 0},
@@ -35,10 +35,10 @@ vendor_data_example = {
         #}
     ],
     'visa_certified_count': 100,
-    'visa_denied_count': 0,
-    'visa_withdrawn_count': 1,
+    'visa_denied_count': 33,
+    'visa_withdrawn_count': 21,
     'visa_certified_expired_count': 1,
-    'visa_unspecified_count': 1,
+    'visa_unspecified_count': 11,
 }
 
 # title for streamlit app
