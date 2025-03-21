@@ -7,12 +7,12 @@ from past_performance import get_past_performance_cancellation_score, interpret_
 from federal_contract import calculate_final_contract_score, interpret_federal_contract_score
 from foreign_labor import calculate_final_foreign_labor_score, interpret_foreign_labor_risk_score
 
-# Define weightings for the risk components (adjust as needed)
+# define weightings for the risk components (adjust as needed, see dial front end)
 RISK_WEIGHTS = {
     'financial_stability': 0.35,   # Higher risk for financially unstable vendors
-    'contract_performance': 0.30,  # Poor contract performance adds risk
-    'foreign_labor_risk': 0.20,    # Dependency on foreign labor increases risk
-    'past_performance': 0.15       # Cancellation history affects risk
+    'federal_contract': 0.10,      # Contract diversity
+    'foreign_labor_risk': 0.30,    # Dependency on foreign labor increases risk
+    'past_performance': 0.20       # Cancellation history affects risk
 }
 
 def calculate_vendor_risk_reliability(financial, past, contract, labor):
@@ -41,13 +41,13 @@ def calculate_scores(vendor_data):
     including individual risk interpretations and an overall VRRS interpretation.
     """
 
-    # Calculate individual risk scores
+    # Calculate individual risk scores (add more as we expand)
     financial_stability_score = get_financial_stability_score(vendor_data)
     past_performance_cancellation_score = get_past_performance_cancellation_score(vendor_data)
     federal_contract_score = calculate_final_contract_score(vendor_data)
     foreign_labor_score = calculate_final_foreign_labor_score(vendor_data)
 
-    # Calculate final VRRS score
+    # Calculate final VRRS score (add more as we expand)
     vrrs_score = calculate_vendor_risk_reliability(
         financial_stability_score,
         past_performance_cancellation_score,
@@ -55,7 +55,7 @@ def calculate_scores(vendor_data):
         foreign_labor_score
     )
 
-    # Interpret individual scores
+    # Interpret individual scores (basic start but in an LLM we can build a model that seeks to maximize interpetation of a larger dataset and fidelity of responses)
     fin_risk_category, fin_interpretation = interpret_financial_stability_risk_score(financial_stability_score)
     past_risk_category, past_interpretation = interpret_past_performance_cancellation_score(past_performance_cancellation_score)
     contract_risk_category, contract_interpretation = interpret_federal_contract_score(federal_contract_score)

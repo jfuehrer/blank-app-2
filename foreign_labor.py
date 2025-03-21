@@ -49,23 +49,6 @@ VISA_CATEGORY_THRESHOLDS = {
     ]
 }
 
-# removed 
-#FOREIGN_LABOR_PERCENTAGE_THRESHOLDS = [
-#    (0, 0, 10), #0% foreign labor receives a perfect score
-#    (1, 10, 8), #1% to 10% foreign labor gets a score of 8
-#    (11, 20, 6), # 11% to 20% foreign labor gets a score of 6 
-#    (21, 50, 4), # 21% to 50% foreign labor gets a score of 4
-#    (51, float('inf'), 2) # Greate than 50% gets a score of 2
-#]
-
-
-#removed
-#TREND_ADJUSTMENT = {
-#    'favorable': 2,
-#    'neutral': 6,
-#    'unfavorable': 10
-#}
-
 
 # 0. generic scoring function based on thresholds
 def score_with_thresholds(value, thresholds):
@@ -83,12 +66,12 @@ def get_country_risk_multiplier(country):
             return COUNTRY_RISK_MULTIPLIER[risk_level]
     return COUNTRY_RISK_MULTIPLIER['moderate_risk']
 
-# 2. Visa Category Score
+# 2. visa category score
 def get_visa_category_score(category, count):
    """Calculate the score for a specific visa category based on counts"""
    return score_with_thresholds(count, VISA_CATEGORY_THRESHOLDS.get(category, []))
 
-# 3. Job Sensitivity Score
+# 3. calculate the job sensitivity score
 def calculate_job_sensitivity_score(low, moderate, high):
     """Calculate the job sensitivity score based on the number of job types"""
     total_jobs = low + moderate + high
@@ -112,19 +95,19 @@ def calculate_country_score_with_visa(country_data, visa_counts):
     # get the country risk multiplier
     risk_multiplier = get_country_risk_multiplier(country)
 
-    # calculate the job sensitivity score
+    # then calculate the job sensitivity score
     job_sensitivity_score = calculate_job_sensitivity_score(
         low_sensitivity_count, moderate_sensitivity_count, high_sensitivity_count
     )
 
-    # calculate base visa score and normalize categories
+    # then calculate base visa score and normalize categories
     total_visa_score = sum(get_visa_category_score(category, count) for category, count in visa_counts.items())
     normalized_visa_score = total_visa_score / len(visa_counts)
 
-    # apply the country risk multiplier and weight (0.5) to visa score)
+    # then apply the country risk multiplier and weight (0.5) to visa score)
     adjusted_visa_score = normalized_visa_score * risk_multiplier
 
-    # combine job sensitivity score and adjust visa score
+    # then combine job sensitivity score and adjust visa score
     final_country_score = (job_sensitivity_score * 0.40) + (adjusted_visa_score * 0.60)
     final_country_score = min(max(final_country_score, 0), 10)
     return final_country_score
@@ -140,7 +123,6 @@ def calculate_final_adjusted_foreign_labor_score(countries_data, visa_counts):
     if not countries_data:
         return 0 # no foreign labor data
     
-    # calculate scores for each country and average them
     country_scores = [
         calculate_country_score_with_visa(country_data, visa_counts) for country_data in countries_data
     ]
@@ -149,20 +131,6 @@ def calculate_final_adjusted_foreign_labor_score(countries_data, visa_counts):
     normalized_score = total_score / len(countries_data)
 
     return round(normalized_score, 2)
-
-'''
-# 6 calcluate visa trend score - removed
-def calculate_visa_trend_score(trend_data):
-    """calculate a score based on recent trends"""
-    if trend_data['denied_withdrawn_trend'] == 10 or trend_data['certified_trend'] == 10:
-        return TREND_ADJUSTMENT['favorable']
-    elif trend_data['certified_trend'] == 6 and trend_data['denied_withdrawn_trend'] == 6:
-        return TREND_ADJUSTMENT['neutral']
-    else:
-        return TREND_ADJUSTMENT['unfavorable']
-'''
-
-# Josh: Need to confirm weighting is applied correctly
 
 # 7. Final Foreign Labor Risk Score
 def calculate_final_foreign_labor_score(vendor_data):
@@ -180,7 +148,7 @@ def calculate_final_foreign_labor_score(vendor_data):
     }
     adjusted_foreign_labor_score = calculate_final_adjusted_foreign_labor_score(countries_data, visa_counts)
 
-    # visa trend score
+    # visa trend score - removed for now
     #trend_data = {
     #    'certified_trend': vendor_data['certified_trend'],
     #    'denied_withdrawn_trend': vendor_data['denied_withdrawn_trend']  
@@ -201,5 +169,33 @@ def interpret_foreign_labor_risk_score(score):
         return "Low Risk", "Vendor has minimal reliance on foreign labor, low-risk roles, and favorable historical trend."
 
 
+'''
+# 6 calcluate visa trend score - removed
+def calculate_visa_trend_score(trend_data):
+    """calculate a score based on recent trends"""
+    if trend_data['denied_withdrawn_trend'] == 10 or trend_data['certified_trend'] == 10:
+        return TREND_ADJUSTMENT['favorable']
+    elif trend_data['certified_trend'] == 6 and trend_data['denied_withdrawn_trend'] == 6:
+        return TREND_ADJUSTMENT['neutral']
+    else:
+        return TREND_ADJUSTMENT['unfavorable']
 
-# need pull interpretation of results by pulling each score interpretation into this function above
+# removed 
+#FOREIGN_LABOR_PERCENTAGE_THRESHOLDS = [
+#    (0, 0, 10), #0% foreign labor receives a perfect score
+#    (1, 10, 8), #1% to 10% foreign labor gets a score of 8
+#    (11, 20, 6), # 11% to 20% foreign labor gets a score of 6 
+#    (21, 50, 4), # 21% to 50% foreign labor gets a score of 4
+#    (51, float('inf'), 2) # Greate than 50% gets a score of 2
+#]
+
+
+#removed
+#TREND_ADJUSTMENT = {
+#    'favorable': 2,
+#    'neutral': 6,
+#    'unfavorable': 10
+#}
+
+# need pull interpretation of results by pulling each score interpretation into this function above'
+'''
