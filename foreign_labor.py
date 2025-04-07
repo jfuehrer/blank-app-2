@@ -167,35 +167,3 @@ def interpret_foreign_labor_risk_score(score):
         return "Moderate Risk", "Vendor uses some foreign labor for low to moderately sensitive roles but demostrates reasonable controls."
     else:
         return "Low Risk", "Vendor has minimal reliance on foreign labor, low-risk roles, and favorable historical trend."
-
-
-'''
-# 6 calcluate visa trend score - removed
-def calculate_visa_trend_score(trend_data):
-    """calculate a score based on recent trends"""
-    if trend_data['denied_withdrawn_trend'] == 10 or trend_data['certified_trend'] == 10:
-        return TREND_ADJUSTMENT['favorable']
-    elif trend_data['certified_trend'] == 6 and trend_data['denied_withdrawn_trend'] == 6:
-        return TREND_ADJUSTMENT['neutral']
-    else:
-        return TREND_ADJUSTMENT['unfavorable']
-
-# removed 
-#FOREIGN_LABOR_PERCENTAGE_THRESHOLDS = [
-#    (0, 0, 10), #0% foreign labor receives a perfect score
-#    (1, 10, 8), #1% to 10% foreign labor gets a score of 8
-#    (11, 20, 6), # 11% to 20% foreign labor gets a score of 6 
-#    (21, 50, 4), # 21% to 50% foreign labor gets a score of 4
-#    (51, float('inf'), 2) # Greate than 50% gets a score of 2
-#]
-
-
-#removed
-#TREND_ADJUSTMENT = {
-#    'favorable': 2,
-#    'neutral': 6,
-#    'unfavorable': 10
-#}
-
-# need pull interpretation of results by pulling each score interpretation into this function above'
-'''

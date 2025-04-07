@@ -1,24 +1,20 @@
 import streamlit as st
 import pandas as pd
 from score_calculator import calculate_scores
-from utils import load_and_validate_csv
+from utils import fetch_vendor_data
 
 def main():
     """Main function t load vendor data, calculate socres, and display results"""
     # define input csv path and required columns
-    input_csv = "vendor_data.csv"
-    required_columns = [
-        'Vendor', 'Altman_Z', 'DTE', 'DTI', 'ROA', 'ROE',
-        'Non-Fulfillment', 'Compliance', ' Adminstrative', 'awards',
-        'agency_count', 'sub_agency_count',
-        'competition_percentage', 'foreign_labor_percentage',
-        'countries_data', 'visa_certified_count',
-        'visa_denied_count', 'visa_withdrawn_count', 'visa_certified_expired_count',
-        'visa_unspecified_count', 'certified_trend', 'denied_withdrawn_trend'
-    ]
+    vendor_id = "vendor123"
+    vendor_data = fetch_vendor_data(vendor_id)
 
-    # load vendor data from CSV
-    vendor_data = load_and_validate_csv(input_csv, required_columns)
+    results = calculate_scores(vendor_data)
+    print("Vendor Risk Reliability Score Report:")
+    for key, value in results.items():
+        print(f"{key}: {value}")
+    
+    
 
     # calculate scores for each vendor
     results = []
