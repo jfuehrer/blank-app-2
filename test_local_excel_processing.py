@@ -1,3 +1,5 @@
+# need to figure out plotly issues 5 and 6
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px

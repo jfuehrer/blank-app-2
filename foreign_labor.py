@@ -4,6 +4,8 @@ Calculates risk scores based on dependency on foreign labor and visa application
 Now includes both point-in-time scoring and historical trend analysis.
 """
 
+#need to figure out scipy issues row 10
+
 import numpy as np
 from scipy import stats
 
